@@ -30,6 +30,7 @@ public:
 
 	//Methods for interfacing with the grid's colours
 	static void setTileColour(int _x, int _y, ofColor _colour);
+    static void setTileValue(int _x, int _y, int _value);
 	static ofColor getTileColour(int _x, int _y);
 
 	//Other methods

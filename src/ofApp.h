@@ -4,6 +4,7 @@
 #include "grid.h"
 #include "tile.h"
 #include "debugger.h"
+#include "sudokuGame.h"
 
 class ofApp : public ofBaseApp{
 
@@ -16,6 +17,7 @@ public:
 
 	//Other methods
 	void handleKeypresses();
+    void handleBounds();
 
 	//Unused, but if we take them out then oF throws a hissy fit
 	void keyReleased(int key);
@@ -37,5 +39,13 @@ private:
 
 	//Vars needed for the game
 	grid g;
+    bool win;
+
+    //Selected tile
+    tile* selectedTile;
+    int selectedTileX;
+    int selectedTileY;
+    int PrevSelectedTileX;
+    int PrevSelectedTileY;
 
 };

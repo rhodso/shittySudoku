@@ -12,6 +12,14 @@ Project{
         name: { return FileInfo.baseName(sourceDirectory) }
 
         files: [
+            "src/debugger.cpp",
+            "src/debugger.h",
+            "src/grid.cpp",
+            "src/grid.h",
+            "src/sudokuGame.cpp",
+            "src/sudokuGame.h",
+            "src/tile.cpp",
+            "src/tile.h",
             'src/main.cpp',
             'src/ofApp.cpp',
             'src/ofApp.h',
