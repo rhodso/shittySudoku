@@ -32,6 +32,7 @@ void grid::setLineColour( ofColor _lineColour){ lineColour = _lineColour; }
 void grid::setTileColour(int _x, int _y, ofColor _colour){ gameSpace[_x][_y].setColour(_colour); }
 void grid::setTileValue(int _x, int _y, int _value){ gameSpace[_x][_y].setValue(_value); }
 ofColor grid::getTileColour(int _x, int _y){ return gameSpace[_x][_y].getColour(); }
+int grid::getTileValue(int _x, int _y){ return gameSpace[_x][_y].getValue(); }
 
 //Other methods
 void grid::createGrid(){

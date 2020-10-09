@@ -33,7 +33,7 @@ public:
 
 private:
 	bool keys[65535];       //Key array
-	bool debug = true;      //Show/Hide debug info
+    bool debug = true;      //Show/Hide debug info
 	unsigned long long frameCount;  //Frame counter
 		//Can store up to 9.749 billion years at 60FPS so no worries about it running out
 

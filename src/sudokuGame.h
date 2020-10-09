@@ -24,7 +24,7 @@ class sudokuGame {
         static void checkCols();
         static void checkSquares();
         static void checkRows();
-        static bool checkOne(std::vector<tile> tileList);
+        static bool checkOne(std::vector<std::vector<int>> tileList);
         void generateNew();
 
 	private:

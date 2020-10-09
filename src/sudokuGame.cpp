@@ -15,8 +15,10 @@ void sudokuGame::setDifficulty( int _difficulty){ difficulty = _difficulty; }
 //Other methods
 bool sudokuGame::check(){
     debugger::log("Started check");
-    std::vector<std::thread> checkem;
     doneCheck = true;
+
+/*
+    std::vector<std::thread> checkem;
 
     checkem.push_back(std::thread(checkCols));
     checkem.push_back(std::thread(checkRows));
@@ -25,113 +27,178 @@ bool sudokuGame::check(){
     for(std::thread &t : checkem){
         t.join();
     }
+*/
+
+    checkCols();
+    //checkRows();
+    //checkSquares();
+
+    debugger::log("Finished checking");
 
     return doneCheck;
 
 }
 void sudokuGame::checkCols(){
-    debugger::log("Started checkCols");
     //Get a copy of the game space
     mtx.lock();
     std::vector<std::vector<tile>> gs = g.getGameSpace();
     mtx.unlock();
-
-    debugger::log("Cols: Got gs");
 
     //For each column in the space
     for(int i = 0; i < g.getGW(); i++){
-        debugger::log("Cols: " + std::to_string(i));
-        vector<tile> v; //Create a vector
+        std::vector<std::vector<int>> v; //Create a vector
         for(int j = 0; j < g.getGH(); j++){
-            v.push_back(gs[i][j]); //Add all the tiles in the column
+            //Create temp vector to store gridX/Y of set, and add to
+            std::vector<int> crd;
+            crd.push_back(i);
+            crd.push_back(j);
+
+            //Add to set
+            v.push_back(crd);
         }
         mtx.lock();
-        debugger::log("Cols: Started checking 'em");
-        if(!checkOne(v)){ //Check 'em
-            debugger::log("Cols: Checked 'em");
+        //if(i==0){ debugger::setDebug(true); }
+        bool checkem = checkOne(v);
+        if(i == 0){
+            //debugger::log("Cols: Cycle " + std::to_string(i) + ", result: " + std::to_string(checkem));
+            //debugger::log("Printing tile X/Y list...");
+            //debugger::setDebug(false);
+        }
+        if(!checkem){ //Check 'em
            doneCheck = false; //return false if there's a problem
         }
         mtx.unlock();
     }
-    debugger::log("Finished checkCols");
 }
 void sudokuGame::checkSquares(){
-    debugger::log("Started checkSquares");
     //Get a copy of the game space
     mtx.lock();
     std::vector<std::vector<tile>> gs = g.getGameSpace();
     mtx.unlock();
 
-    debugger::log("Squares: Got gs");
-
     for(int i = 0; i < g.getGH(); i+=3){
-        debugger::log("Squares: " + std::to_string(i));
-        vector<tile> v;
+        std::vector<std::vector<int>> v;
         for(int j = 0; j < g.getGW(); j+= 3){
-            v.push_back(gs[i][j]);
-            v.push_back(gs[i+1][j]);
-            v.push_back(gs[i+2][j]);
 
-            v.push_back(gs[i][j+1]);
-            v.push_back(gs[i+1][j+1]);
-            v.push_back(gs[i+2][j+1]);
+            /*
+                1-1 1-2 1-3
+                2-1 2-2 2-3
+                3-1 3-2 3-3
+            */
 
-            v.push_back(gs[i][j+2]);
-            v.push_back(gs[i+1][j+2]);
-            v.push_back(gs[i+2][j+2]);
+
+            //Create temp vector to store gridX/Y of set, and add to
+            std::vector<int> crd;
+
+            //For each tile we need to look at:
+            // Clear crd if needed
+            // crd.push_bakc(X); crd.push_back(Y);
+            // v.push_back(Tile we just make in crd
+
+
+            //Part 1
+            crd.push_back(i); crd.push_back(j);
+            v.push_back(crd);
+
+            crd.clear();
+            crd.push_back(i); crd.push_back(j+1);
+            v.push_back(crd);
+
+            crd.clear();
+            crd.push_back(i); crd.push_back(j+2);
+            v.push_back(crd);
+
+            //Part 2
+            crd.clear();
+            crd.push_back(i+1);crd.push_back(j);
+            v.push_back(crd);
+
+            crd.clear();
+            crd.push_back(i+1);crd.push_back(j+1);
+            v.push_back(crd);
+
+            crd.clear();
+            crd.push_back(i+1);crd.push_back(j+2);
+            v.push_back(crd);
+
+
+            //Part 3
+            crd.clear();
+            crd.push_back(i+2);crd.push_back(j);
+            v.push_back(crd);
+
+            crd.clear();
+            crd.push_back(i+2);crd.push_back(j+1);
+            v.push_back(crd);
+
+            crd.clear();
+            crd.push_back(i+2);crd.push_back(j+2);
+            v.push_back(crd);
+
         }
         mtx.lock();
-        debugger::log("Squares: Started checking 'em");
         if(!checkOne(v)){ //Check 'em
-            debugger::log("Squares: Checked 'em");
            doneCheck = false; //return false if there's a problem
         }
         mtx.unlock();
     }
-    debugger::log("Finished checkSquares");
 }
 void sudokuGame::checkRows(){
-    debugger::log("Started checkRows");
     //Get a copy of the game space
     mtx.lock();
     std::vector<std::vector<tile>> gs = g.getGameSpace();
     mtx.unlock();
-
-    debugger::log("Rows: Got gs");
 
     //For each column in the space
     for(int i = 0; i < g.getGH(); i++){
-        debugger::log("Rows: " + std::to_string(i));
-        vector<tile> v; //Create a vector
+        std::vector<std::vector<int>> v; //Create a vector
         for(int j = 0; j < g.getGW(); j++){
-            v.push_back(gs[i][j]); //Add all the tiles in the column
+            //Create temp vector to store gridX/Y of set, and add to
+            std::vector<int> crd;
+            crd.push_back(i);
+            crd.push_back(j);
+
+            //Add to set
+            v.push_back(crd);
         }
         mtx.lock();
-        debugger::log("Rows: Started checking 'em");
         if(!checkOne(v)){ //Check 'em
-            debugger::log("Rows: Checked 'em");
            doneCheck = false; //return false if there's a problem
         }
         mtx.unlock();
     }
-    debugger::log("Finished checkRows");
 }
-bool sudokuGame::checkOne(std::vector<tile> tileList){
-    debugger::log("Started checkOne");
+bool sudokuGame::checkOne(std::vector<std::vector<int>> tileList){
+    //debugger::log("Started checkOne");
     if(tileList.size() != 9){
         return false;
     }
 
-    debugger::log("Started checking for dupes");
-    std::vector<bool> presenceCheck = {false*9};
-    for(tile t : tileList){
-        if(!presenceCheck[t.getValue()-1]){ //Ensure that there's no duplicate numbers
-            presenceCheck[t.getValue()-1] = true;
+    //debugger::log("Init precense check");
+    std::vector<bool> presenceCheck = {false,false,false,false,false,false,false,false,false,false};
+
+    //debugger::log("Checking through");
+    for(std::vector<int> t : tileList){
+        int tileX = t[0];
+        int tileY = t[1];
+        int valueOfTile = g.getTileValue(tileX, tileY);
+        //debugger::log("Tile X/Y/value is " + std::to_string(tileX) + "/" + std::to_string(tileY) + "/" + std::to_string(valueOfTile));
+        if(presenceCheck[valueOfTile] == false){
+            presenceCheck[valueOfTile] = true;
         } else {
-            return false;
+            debugger::log("Dupe detected, printing output");
+            if(debugger::getDebug()){
+                int tmp = 0;
+                for(bool b : presenceCheck){
+                    debugger::log("tmp: " + std::to_string(tmp) + ": " + std::to_string(b));
+                    tmp++;
+                }
+                return false;
+            }
         }
     }
-    debugger::log("Started counting number of trues");
+
+    //debugger::log("Counting trues");
     //Count the number of trues
     int tot = 0;
     for(bool b : presenceCheck){
@@ -139,7 +206,10 @@ bool sudokuGame::checkOne(std::vector<tile> tileList){
             tot++;
         }
     }
-    debugger::log("Finishing up");
+
+    //debugger::log(std::to_string(tot) + " trues");
+    //debugger::log("Finishing up...");
+
     //If we've 9 trues, return true
     if(tot == 9){
         return true;

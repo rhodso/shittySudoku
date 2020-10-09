@@ -21,7 +21,7 @@ void ofApp::setup(){
 	g.createGrid();
 
     //Create the selected tile
-    selectedTileX = selectedTileY = 5;
+    selectedTileX = selectedTileY = 4;
 
 	//Setup completed, log
 	debugger::log("Setup complete");
@@ -29,15 +29,18 @@ void ofApp::setup(){
 
 void ofApp::update(){
     //Handle keypresses, update selectedTile, check for win
-    handleKeypresses();
+    if(!win){
+        handleKeypresses();
+    }
     selectedTile = &g.getGameSpace()[selectedTileY][selectedTileX];
-    win = sudokuGame::check();
 }
 
 void ofApp::draw(){
     //Reset previous tile
     g.setTileColour(PrevSelectedTileX, PrevSelectedTileY, ofColor::black);
     if(win){
+        ofSetColor(ofColor::black);
+        ofDrawBitmapString("You win", 10, 10);
         for(int i = 0; i < g.getGH(); i++){
             for(int j = 0; j < g.getGW(); j++){
                 g.setTileColour(i,j,ofColor::green);
@@ -70,43 +73,61 @@ void ofApp::handleBounds(){
 
 void ofApp::handleKeypresses(){
     if(keys[112]){
-        g.getGameSpace()[0][0].setValue(1);
-        tile* t;
-        t = &g.getGameSpace()[0][0];
-        t->setValue(1);
+        PrevSelectedTileX = selectedTileX;
+        PrevSelectedTileY = selectedTileY;
+        selectedTileX = 0;
+        selectedTileY = 0;
+
+        for(int i = 1; i < 9; i++){
+            g.setTileValue(i,0,i+1);
+            g.setTileValue(0,i,i+1);
+        }
+
         keys[112] = false;
     }
+
+    // win = sudokuGame::check();
+    //This method is called anytime a key is pressed
+    //This means that we only need to ask if the player has won
+    //whenever they press a key that results in a change
 
     //Value keys
     if(keys[49]){ //Number 1
         keys[49] = false;
-        //selectedTile->setValue(1);
         g.setTileValue(selectedTileX,selectedTileY,1);
-        debugger::log("1");
+        win = sudokuGame::check();
     } else if(keys[50]){ // Number 2
         keys[50] = false;
         g.setTileValue(selectedTileX,selectedTileY,2);
+        win = sudokuGame::check();
     } else if(keys[51]){ // Number 3
         keys[51] = false;
         g.setTileValue(selectedTileX,selectedTileY,3);
+        win = sudokuGame::check();
     } else if(keys[52]){ // Number 4
         keys[52] = false;
         g.setTileValue(selectedTileX,selectedTileY,4);
+        win = sudokuGame::check();
     } else if(keys[53]){ // Number 5
         keys[53] = false;
         g.setTileValue(selectedTileX,selectedTileY,5);
+        win = sudokuGame::check();
     } else if(keys[54]){ // Number 6
         keys[54] = false;
         g.setTileValue(selectedTileX,selectedTileY,6);
+        win = sudokuGame::check();
     } else if(keys[55]){ // Number 7
         keys[55] = false;
         g.setTileValue(selectedTileX,selectedTileY,7);
+        win = sudokuGame::check();
     } else if(keys[56]){ // Number 8
         keys[56] = false;
         g.setTileValue(selectedTileX,selectedTileY,8);
+        win = sudokuGame::check();
     } else if(keys[57]){ // Number 9
         keys[57] = false;
         g.setTileValue(selectedTileX,selectedTileY,9);
+        win = sudokuGame::check();
     }
 
     //Moving selected tile
